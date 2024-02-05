@@ -1,33 +1,29 @@
 #include <iostream>
+#include <fstream>
 
 int main() {
-    // Test local allocation
-    const size_t localSize = 1024 * 1024; // 1 MB
-    try {
-        char test[localSize];
-        test[0] = 'a';
-        std::cout << "Local allocation successful: " << localSize / 1024 << " kilobytes\n";
-    } catch (...) {
-        std::cout << "Local allocation failed: " << localSize / 1024 << " kilobytes\n";
+    std::ifstream file("Random.txt");
+    if (!file) {
+        std::cerr << "Unable to open file";
+        return 1;
     }
 
-    // Test dynamic allocation
-    size_t dynamicMax = 0;
-    for (size_t i = 100000; ; i += 50000) {
-        char* test = nullptr;
-        try {
-            test = new char[i * 1024]; // kilobytes to bytes
-            test[0] = 'a';
-            delete[] test;
-            dynamicMax = i;
-        } catch (std::bad_alloc&) {
-            std::cout << "Dynamic allocation failed at: " << i << " kilobytes\n";
-            delete[] test;
-            break;
-        }
+    double number;
+    double sum = 0.0;
+    int count = 0;
+
+    while (file >> number) {
+        sum += number;
+        count++;
     }
 
-    std::cout << "Max dynamic allocation: " << dynamicMax << " kilobytes\n";
+    file.close();
+
+    double average = sum / count;
+
+    std::cout << "Number of numbers: " << count << std::endl;
+    std::cout << "Sum of numbers: " << sum << std::endl;
+    std::cout << "Average of numbers: " << average << std::endl;
 
     return 0;
 }

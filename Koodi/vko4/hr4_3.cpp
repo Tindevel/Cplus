@@ -1,33 +1,37 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 
 int main() {
-    // Test local allocation
-    const size_t localSize = 1024 * 1024; // 1 MB
-    try {
-        char test[localSize];
-        test[0] = 'a';
-        std::cout << "Local allocation successful: " << localSize / 1024 << " kilobytes\n";
-    } catch (...) {
-        std::cout << "Local allocation failed: " << localSize / 1024 << " kilobytes\n";
+    std::string name;
+    std::string description;
+
+    std::cout << "Enter your name: ";
+    std::getline(std::cin, name);
+
+    std::cout << "Enter a sentence that describes you: ";
+    std::getline(std::cin, description);
+
+    std::ofstream file("personal_web_page.html");
+    if (!file) {
+        std::cerr << "Unable to create file";
+        return 1;
     }
 
-    // Test dynamic allocation
-    size_t dynamicMax = 0;
-    for (size_t i = 100000; ; i += 50000) {
-        char* test = nullptr;
-        try {
-            test = new char[i * 1024]; // kilobytes to bytes
-            test[0] = 'a';
-            delete[] test;
-            dynamicMax = i;
-        } catch (std::bad_alloc&) {
-            std::cout << "Dynamic allocation failed at: " << i << " kilobytes\n";
-            delete[] test;
-            break;
-        }
-    }
+    file << "<!DOCTYPE html>\n"
+         << "<html>\n"
+         << "<head>\n"
+         << "    <title>" << name << "'s Personal Web Page</title>\n"
+         << "</head>\n"
+         << "<body>\n"
+         << "    <h1>Welcome to " << name << "'s personal web page!</h1>\n"
+         << "    <p>" << description << "</p>\n"
+         << "</body>\n"
+         << "</html>\n";
 
-    std::cout << "Max dynamic allocation: " << dynamicMax << " kilobytes\n";
+    file.close();
+
+    std::cout << "HTML file has been created named 'personal_web_page.html'";
 
     return 0;
 }
